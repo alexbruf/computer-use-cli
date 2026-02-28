@@ -13,12 +13,14 @@ jobs:
     strategy:
       matrix:
         include:
+          # macOS arm64 runner cross-compiles both darwin targets
           - os: macos-latest
             target: darwin-arm64
             bun_target: bun-darwin-arm64
-          - os: macos-13
+          - os: macos-latest
             target: darwin-x64
             bun_target: bun-darwin-x64
+          # Linux targets on native runners
           - os: ubuntu-latest
             target: linux-x64
             bun_target: bun-linux-x64
