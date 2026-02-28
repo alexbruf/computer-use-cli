@@ -1,0 +1,18 @@
+{
+  "name": "computer-use",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "computer-use": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "build": "bun build --compile src/index.ts --outfile dist/computer-use",
+    "doctor": "bun run src/index.ts doctor"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.7.0"
+  }
+}
