@@ -1,5 +1,6 @@
 import { run } from "../lib/run";
 import { ok, fail } from "../lib/output";
+import { dragCmd } from "../lib/platform";
 
 export async function drag(args: string[]): Promise<void> {
   const fromX = parseInt(args[0]);
@@ -11,11 +12,7 @@ export async function drag(args: string[]): Promise<void> {
     fail("drag requires <fromX> <fromY> <toX> <toY>");
   }
 
-  const result = await run([
-    "cliclick",
-    `dd:${fromX},${fromY}`,
-    `du:${toX},${toY}`,
-  ]);
+  const result = await run(dragCmd(fromX, fromY, toX, toY));
   if (result.exitCode !== 0) {
     fail(`drag failed: ${result.stderr}`);
   }

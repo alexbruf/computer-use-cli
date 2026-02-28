@@ -1,17 +1,17 @@
 import { run } from "../lib/run";
 import { ok, fail } from "../lib/output";
+import { cursorCmd, parseCursorOutput } from "../lib/platform";
 
 export async function cursor(): Promise<void> {
-  const result = await run(["cliclick", "p"]);
+  const result = await run(cursorCmd());
   if (result.exitCode !== 0) {
     fail(`cursor position failed: ${result.stderr}`);
   }
 
-  // cliclick p outputs something like "512,384"
-  const match = result.stdout.match(/(\d+),\s*(\d+)/);
-  if (!match) {
-    fail(`unexpected cliclick output: ${result.stdout}`);
+  const pos = parseCursorOutput(result.stdout);
+  if (isNaN(pos.x) || isNaN(pos.y)) {
+    fail(`unexpected output: ${result.stdout}`);
   }
 
-  ok({ x: parseInt(match[1]), y: parseInt(match[2]) });
+  ok(pos);
 }

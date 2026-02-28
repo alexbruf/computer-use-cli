@@ -1,6 +1,7 @@
 import { run } from "../lib/run";
 import { ok, fail } from "../lib/output";
 import { extractFlag } from "../lib/args";
+import { screenshotCmd } from "../lib/platform";
 import { unlink } from "node:fs/promises";
 
 export async function screenshot(args: string[]): Promise<void> {
@@ -10,13 +11,10 @@ export async function screenshot(args: string[]): Promise<void> {
   const targetPath =
     fileArg ?? `/tmp/computer-use-screenshot-${Date.now()}.png`;
 
-  const cmd = ["screencapture", "-x"]; // -x = no sound
-  if (displayArg) cmd.push("-D", displayArg);
-  cmd.push(targetPath);
-
+  const cmd = screenshotCmd(targetPath, displayArg);
   const result = await run(cmd, { timeout: 5000 });
   if (result.exitCode !== 0) {
-    fail(`screencapture failed: ${result.stderr}`);
+    fail(`screenshot failed: ${result.stderr}`);
   }
 
   if (fileArg) {

@@ -24,7 +24,8 @@ const COMMANDS: Record<string, (args: string[]) => Promise<void>> = {
   "screen-size": screenSize,
 };
 
-const NEEDS_CLICLICK = new Set([
+// Commands that need the main automation tool (cliclick on macOS, xdotool on Linux)
+const NEEDS_TOOL = new Set([
   "click",
   "move",
   "drag",
@@ -34,7 +35,7 @@ const NEEDS_CLICLICK = new Set([
 ]);
 
 function printUsage(): void {
-  const usage = `computer-use — Native macOS computer automation CLI
+  const usage = `computer-use — Native computer automation CLI (macOS + Linux)
 
 Usage: computer-use <command> [args]
 
@@ -78,8 +79,8 @@ async function main(): Promise<void> {
     return;
   }
 
-  // Lightweight preflight for commands that need cliclick
-  if (NEEDS_CLICLICK.has(command)) {
+  // Lightweight preflight for commands that need the automation tool
+  if (NEEDS_TOOL.has(command)) {
     await preflight();
   }
 

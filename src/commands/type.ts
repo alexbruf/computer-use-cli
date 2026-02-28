@@ -1,5 +1,6 @@
 import { run } from "../lib/run";
 import { ok, fail } from "../lib/output";
+import { typeCmd } from "../lib/platform";
 
 export async function typeText(args: string[]): Promise<void> {
   const text = args.join(" ");
@@ -7,7 +8,7 @@ export async function typeText(args: string[]): Promise<void> {
     fail("type requires text argument");
   }
 
-  const result = await run(["cliclick", `t:${text}`], {
+  const result = await run(typeCmd(text), {
     timeout: Math.max(10_000, text.length * 50),
   });
   if (result.exitCode !== 0) {

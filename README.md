@@ -1,6 +1,6 @@
 # computer-use
 
-Native macOS computer automation CLI. Control your Mac from the command line — screenshots, mouse, keyboard, scrolling.
+Native computer automation CLI for **macOS** and **Linux**. Control your desktop from the command line — screenshots, mouse, keyboard, scrolling.
 
 Built for use with AI coding agents (Claude Code, etc.) but works standalone.
 
@@ -26,8 +26,13 @@ bun run build  # produces dist/computer-use
 
 ### Prerequisites
 
-- **cliclick** — `brew install cliclick` (mouse/keyboard control)
-- **macOS permissions** — Accessibility and Screen Recording must be enabled for your terminal app in System Settings > Privacy & Security
+**macOS:**
+- `brew install cliclick`
+- Enable Accessibility and Screen Recording for your terminal in System Settings > Privacy & Security
+
+**Linux (X11):**
+- `apt install xdotool scrot` (Debian/Ubuntu) or `dnf install xdotool scrot` (Fedora)
+- X11 display (`DISPLAY` env var must be set)
 
 Run `computer-use doctor` to verify everything is set up.
 
@@ -71,27 +76,28 @@ $ computer-use cursor --json
 
 ### Key combos
 
-Modifiers: `cmd`, `ctrl`, `alt`/`option`, `shift`, `fn`
+Modifiers: `cmd`/`super`, `ctrl`, `alt`/`option`, `shift`, `fn`
 Keys: `return`/`enter`, `tab`, `space`, `escape`/`esc`, `delete`, `up`, `down`, `left`, `right`, `f1`-`f16`, `home`, `end`, `pageup`, `pagedown`
 
 Join with `+`: `cmd+c`, `cmd+shift+s`, `ctrl+alt+delete`
 
+> On Linux, `cmd` maps to `super` (the "Windows" key).
+
 ### Coordinates
 
-- Logical (non-retina) pixels
-- `(0, 0)` is top-left of main display
+- Logical pixels, `(0, 0)` is top-left of main display
 - Use `screen-size` to get dimensions
 
 ## How it works
 
-Thin wrapper around native macOS tools:
+Thin wrapper around native OS tools, auto-detected by platform:
 
-| Command | Underlying tool |
-|---------|----------------|
-| screenshot | `screencapture` (built-in) |
-| click, move, drag, type, key, cursor | `cliclick` (brew) |
-| scroll | Swift `CGEvent` (built-in) |
-| screen-size | `system_profiler` (built-in) |
+| Command | macOS | Linux |
+|---------|-------|-------|
+| screenshot | `screencapture` | `scrot` |
+| click, move, drag, type, key, cursor | `cliclick` | `xdotool` |
+| scroll | Swift `CGEvent` | `xdotool` |
+| screen-size | `system_profiler` | `xdotool` |
 
 All subprocesses are spawned with array arguments (no shell interpolation) for safety.
 

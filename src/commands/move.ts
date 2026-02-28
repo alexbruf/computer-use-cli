@@ -1,5 +1,6 @@
 import { run } from "../lib/run";
 import { ok, fail } from "../lib/output";
+import { moveCmd } from "../lib/platform";
 
 export async function move(args: string[]): Promise<void> {
   const x = parseInt(args[0]);
@@ -8,7 +9,7 @@ export async function move(args: string[]): Promise<void> {
     fail("move requires <x> <y> coordinates");
   }
 
-  const result = await run(["cliclick", `m:${x},${y}`]);
+  const result = await run(moveCmd(x, y));
   if (result.exitCode !== 0) {
     fail(`move failed: ${result.stderr}`);
   }

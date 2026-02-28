@@ -1,15 +1,15 @@
 ---
 name: computer-use
 description: >
-  Control the macOS GUI — take screenshots, click, type, scroll, drag, and read
-  cursor position using the `computer-use` CLI. Use when you need to interact with
-  desktop applications, automate UI workflows, verify visual state, or perform any
-  action that requires seeing or controlling the screen.
+  Control the desktop GUI (macOS or Linux) — take screenshots, click, type, scroll,
+  drag, and read cursor position using the `computer-use` CLI. Use when you need to
+  interact with desktop applications, automate UI workflows, verify visual state, or
+  perform any action that requires seeing or controlling the screen.
 allowed-tools: Bash, Read
 argument-hint: "[task description]"
 ---
 
-You have access to the `computer-use` CLI for native macOS GUI automation.
+You have access to the `computer-use` CLI for native GUI automation (macOS and Linux).
 Run all commands via the Bash tool. Use `--json` when you need to parse output programmatically.
 
 ## Workflow
@@ -58,7 +58,7 @@ computer-use doctor                           # verify deps and permissions
 
 ## Key names
 
-Modifiers: `cmd`, `ctrl`, `alt`/`option`, `shift`, `fn`
+Modifiers: `cmd`/`super`, `ctrl`, `alt`/`option`, `shift`, `fn` (on Linux, `cmd` maps to `super`)
 Keys: `return`/`enter`, `tab`, `space`, `escape`/`esc`, `delete`/`backspace`, `up`, `down`, `left`, `right`, `f1`-`f16`, `home`, `end`, `pageup`, `pagedown`
 Combos: join with `+` (e.g., `cmd+shift+z`)
 
