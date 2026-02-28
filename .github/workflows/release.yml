@@ -13,14 +13,12 @@ jobs:
     strategy:
       matrix:
         include:
-          # macOS arm64 runner cross-compiles both darwin targets
           - os: macos-latest
             target: darwin-arm64
             bun_target: bun-darwin-arm64
           - os: macos-latest
             target: darwin-x64
             bun_target: bun-darwin-x64
-          # Linux targets on native runners
           - os: ubuntu-latest
             target: linux-x64
             bun_target: bun-linux-x64
@@ -40,17 +38,15 @@ jobs:
       - run: bun install
 
       - name: Build binary
-        run: bun build --compile --target=${{ matrix.bun_target }} src/index.ts --outfile dist/computer-use
-
-      - name: Package
         run: |
-          cd dist
-          tar czf computer-use-${{ matrix.target }}.tar.gz computer-use
+          bun build --compile --target=${{ matrix.bun_target }} src/index.ts --outfile dist/computer-use
+          mv dist/computer-use dist/computer-use-${{ matrix.target }}
+          chmod +x dist/computer-use-${{ matrix.target }}
 
       - uses: actions/upload-artifact@v4
         with:
           name: computer-use-${{ matrix.target }}
-          path: dist/computer-use-${{ matrix.target }}.tar.gz
+          path: dist/computer-use-${{ matrix.target }}
 
   release:
     needs: build
@@ -65,4 +61,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          files: artifacts/*.tar.gz
+          files: artifacts/computer-use-*
