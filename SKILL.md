@@ -1,86 +1,71 @@
-# computer-use: Native macOS Computer Automation
+---
+name: computer-use
+description: >
+  Control the macOS GUI — take screenshots, click, type, scroll, drag, and read
+  cursor position using the `computer-use` CLI. Use when you need to interact with
+  desktop applications, automate UI workflows, verify visual state, or perform any
+  action that requires seeing or controlling the screen.
+allowed-tools: Bash, Read
+argument-hint: "[task description]"
+---
 
-Use this skill when you need to interact with the macOS GUI — clicking, typing, taking screenshots, scrolling, or reading cursor position. This is a local CLI tool, not a Docker container or remote service.
+You have access to the `computer-use` CLI for native macOS GUI automation.
+Run all commands via the Bash tool. Use `--json` when you need to parse output programmatically.
 
-## Setup
-Requires: `brew install cliclick` and macOS Accessibility + Screen Recording permissions for your terminal.
-Run `computer-use doctor` to verify.
+## Workflow
+
+1. Get screen dimensions: `computer-use screen-size`
+2. Take a screenshot to see what's on screen: `computer-use screenshot --file /tmp/ss.png`
+3. Read the screenshot with the Read tool to understand what's visible
+4. Act — click, type, scroll, press keys as needed
+5. Screenshot again to verify the result
+6. Repeat until the task described in `$ARGUMENTS` is complete
 
 ## Commands
 
-All commands output JSON: `{ success: boolean, data: any, error: string | null }`
-
-### Screenshot
 ```bash
-computer-use screenshot                     # Returns { base64_image, format: "png" }
-computer-use screenshot --file /tmp/ss.png  # Saves to file, returns { file, format }
-```
+# See the screen
+computer-use screenshot --file /tmp/ss.png   # save to file (use Read tool to view)
+computer-use screenshot                       # returns base64 to stdout
+computer-use screen-size                      # display dimensions
 
-### Click
-```bash
-computer-use click 500 300                  # Left click at (500, 300)
-computer-use click 500 300 --button right   # Right click
-computer-use click 500 300 --button double  # Double click
-```
+# Mouse
+computer-use click <x> <y>                   # left click
+computer-use click <x> <y> --button right    # right click
+computer-use click <x> <y> --button double   # double click
+computer-use move <x> <y>                    # move cursor
+computer-use drag <fx> <fy> <tx> <ty>        # drag
+computer-use cursor                           # get current position
 
-### Move Cursor
-```bash
-computer-use move 500 300
-```
+# Keyboard
+computer-use type "text here"                 # type text
+computer-use key cmd+c                        # key combo (cmd+c, cmd+shift+s, etc.)
+computer-use key Return                       # single key (Return, tab, escape, etc.)
 
-### Drag
-```bash
-computer-use drag 100 100 400 400           # Drag from (100,100) to (400,400)
-```
+# Scroll
+computer-use scroll down                      # scroll active window
+computer-use scroll up --amount 10            # scroll with custom amount
 
-### Type Text
-```bash
-computer-use type "Hello, world!"
-```
-
-### Key Press / Combo
-```bash
-computer-use key Return
-computer-use key cmd+c
-computer-use key cmd+shift+s
-computer-use key tab
-computer-use key escape
-```
-
-### Cursor Position
-```bash
-computer-use cursor                         # Returns { x, y }
-```
-
-### Scroll
-```bash
-computer-use scroll down
-computer-use scroll up --amount 10
-computer-use scroll right
-```
-
-### Screen Size
-```bash
-computer-use screen-size                    # Returns { width, height, screens: [...] }
-```
-
-### Doctor
-```bash
-computer-use doctor                         # Check cliclick, permissions
+# Diagnostics
+computer-use doctor                           # verify deps and permissions
 ```
 
 ## Coordinates
-- Logical (non-retina) pixels, (0,0) is top-left of main display
-- Use `screen-size` to get dimensions, `cursor` to find current position
 
-## Workflow Pattern
-1. `computer-use screen-size` to learn dimensions
-2. `computer-use screenshot --file /tmp/ss.png` to see the screen
-3. Identify target coordinates from the screenshot
-4. `computer-use click <x> <y>` or `computer-use type "text"` to interact
-5. `computer-use screenshot` again to verify the result
+- Logical pixels (non-retina), (0,0) is top-left of main display
+- Use `screen-size` to get bounds, `cursor` to get current position
+- Screenshots are at full retina resolution — scale coordinates accordingly when mapping from screenshot pixels to click targets
 
-## Key Names
-Modifiers: cmd, ctrl, alt/option, shift, fn
-Keys: return/enter, tab, space, escape/esc, delete/backspace, up, down, left, right, f1-f16, home, end, pageup, pagedown
+## Key names
+
+Modifiers: `cmd`, `ctrl`, `alt`/`option`, `shift`, `fn`
+Keys: `return`/`enter`, `tab`, `space`, `escape`/`esc`, `delete`/`backspace`, `up`, `down`, `left`, `right`, `f1`-`f16`, `home`, `end`, `pageup`, `pagedown`
 Combos: join with `+` (e.g., `cmd+shift+z`)
+
+## Tips
+
+- Always screenshot before and after actions to confirm state
+- If a click doesn't land where expected, re-screenshot and recalculate coordinates
+- Use `--json` flag for machine-parseable output from any command
+- For text input into a focused field, prefer `computer-use type` over clicking + typing
+- Run `computer-use doctor` if commands fail unexpectedly
